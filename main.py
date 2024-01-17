@@ -61,7 +61,7 @@ def blur_person(image, box):
 
 
 model = YOLO("gpModel.pt")
-cap = cv2.VideoCapture("test_video1.mp4")
+cap = cv2.VideoCapture("test_video.mp4")
 
 class_avg_sizes = {
     "person": {"width_ratio": 2.5},
