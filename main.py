@@ -16,8 +16,8 @@ def speak(q):
     while True:
         if not q.empty():
             label, distance, position = q.get()
-            rounded_distance = round(distance * 2) / 2  # Tam sayı veya 0.5 adımlarıyla yuvarla
-            # EĞER TAM SAYI SÖYLİYECEKSE .0 KISMINI KALDIRIYOR. 2.0 YERİNE DİREKT 2 DİYOR.
+            rounded_distance = round(distance * 2) / 2  # Round to integer or in steps of 0.5
+            # IF IT SAYS A INT NUMBER, IT REMOVES THE .0 PART. IT SAYS DIRECTLY 2 INSTEAD OF 2.0.
             rounded_distance_str = str(int(rounded_distance)) if rounded_distance.is_integer() else str(rounded_distance)
             if label in class_avg_sizes:
                 engine.say(f"{label} IS {rounded_distance_str} METERS ON {position}")
@@ -25,8 +25,8 @@ def speak(q):
             with queue.mutex:
                 queue.queue.clear()
         else:
-            time.sleep(0.1)  # Busy waiting'i önlemek için
-
+            time.sleep(0.1)  # To avoid busy waiting
+            
 queue = Queue()
 t = Thread(target=speak, args=(queue,))
 t.start()
@@ -103,10 +103,10 @@ while cap.isOpened():
                 nearest_object = (label, round(distance, 1), cords)
                 detected_objects = [(label, round(distance, 1))]
 
-            # EN YAKIN KIRMIZI OBJE FARKETMIYOR
-            # INSAN YESIL
-            # ARABA SARI
-            # DIGERLERI  MAVI
+             # THE CLOSEST RED OBJECT DOES NOT MATTER
+             # HUMAN GREEN
+             # CAR YELLOW
+             # OTHERS ARE BLUE
 
             if label == "person":
                 frame = blur_person(frame, box)
@@ -132,7 +132,7 @@ while cap.isOpened():
                 cv2.putText(frame, text, (nearest_object[2][0], nearest_object[2][1] - 10), cv2.FONT_HERSHEY_SIMPLEX,
                             0.5, colorRed, thickness)
 
-            if nearest_object[1] <= 12.5:  # mesafe belirlenen değerden küçük ve büyük ise sesli bir şekilde söyle
+            if nearest_object[1] <= 12.5:  # give audio feedback if the distance is smaller or larger than the specified value
                 position = get_position(frame.shape[1], nearest_object[2]) #frame_width, box
                 queue.put((nearest_object[0], nearest_object[1], position))  # label, distance, position
 
